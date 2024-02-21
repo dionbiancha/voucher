@@ -1,16 +1,4 @@
 import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  Link,
-  Text,
-  TextField
-} from '@radix-ui/themes'
-import { FaGoogle, FaFacebookF } from 'react-icons/fa'
-
-import {
   GoogleAuthProvider,
   signInWithPopup,
   User,
@@ -19,98 +7,198 @@ import {
 } from 'firebase/auth'
 import { auth } from '../../services/firebase'
 import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  InputAdornment,
+  Link,
+  Stack,
+  TextField
+} from '@mui/material'
+import { FaFacebookF } from 'react-icons/fa'
+import GoogleIcon from '/assets/icons/google-icon.png'
+import { useSnack } from '../../components/Snack'
+import { LoadingButton } from '@mui/lab'
+import { MdVisibilityOff, MdVisibility } from 'react-icons/md'
+import { useDataUser } from '../../context/userContext'
+
+type Inputs = {
+  email: string
+  password: string
+}
 
 function SignIn() {
-  const [user, setUser] = useState<User>({} as User)
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+  const { setUserData } = useDataUser()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const snack = useSnack()
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<Inputs>()
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    setIsLoading(true)
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then((res) => {
+        setUserData(res.user)
+      })
+      .catch((error) => {
+        setIsLoading(false)
+        snack.connectionFail()
+      })
+  }
 
   function handleGoogleSignIn() {
+    if (isLoading) return
     const provider = new GoogleAuthProvider()
+    setIsLoading(true)
     signInWithPopup(auth, provider)
       .then((res) => {
-        setUser(res.user)
+        setUserData(res.user)
       })
       .catch((error) => {})
   }
 
   function handleFacebookSignIn() {
+    if (isLoading) return
     const provider = new FacebookAuthProvider()
+
     signInWithPopup(auth, provider)
       .then((res) => {
-        console.log(res.user)
-      })
-      .catch((error) => {})
-  }
-
-  function handleEmailAndPasswordSignIn() {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        console.log(res.user)
+        setUserData(res.user)
       })
       .catch((error) => {})
   }
 
   return (
     <Container>
-      <Flex style={{ height: '90vh' }} direction='column' align='center' justify='center'>
-        <Heading as='h1' mb='2' size='6'>
-          Welcome to Voucher
-        </Heading>
-        <Text>Crie vouchers de maneira rapida e simples</Text>
+      <Stack
+        sx={{ height: '90vh' }}
+        direction='column'
+        justifyContent='center'
+        alignItems='center'
+      >
+        <h1>Sign up for Voucher</h1>
 
         <Button
+          variant='outlined'
           onClick={handleGoogleSignIn}
-          style={{ width: '300px', cursor: 'pointer' }}
-          mt='5'
-          color='tomato'
-          radius='large'
-          size='2'
+          sx={{
+            ...styleSocialButton,
+            color: '#000'
+          }}
         >
-          <FaGoogle width='16' height='16' /> Google
+          <img width='15px' src={GoogleIcon} alt='logo google' />
+          <span>Continue with Google</span>
+          <Box />
         </Button>
 
         <Button
+          variant='contained'
           onClick={handleFacebookSignIn}
-          style={{ width: '300px', cursor: 'pointer' }}
-          mt='2'
-          color='blue'
-          radius='large'
-          size='2'
+          sx={{ ...styleSocialButton }}
         >
-          <FaFacebookF width='16' height='16' /> Facebook
+          <FaFacebookF />
+          <span>Continue with Facebook</span>
+          <Box />
         </Button>
-        <Text mt='3'>or</Text>
-        <Flex direction='column' gap='3' mt='3' style={{ width: 300 }}>
-          <TextField.Input
-            onChange={(e) => setEmail(e.target.value)}
-            variant='surface'
+        <p style={{ marginBottom: '25px' }}>or</p>
+
+        <form onSubmit={handleSubmit(onSubmit)} style={{ ...styleForm }}>
+          <TextField
+            error={errors.email ? true : false}
+            fullWidth
+            helperText={errors.email && 'Campo inválido'}
+            disabled={isLoading}
+            {...register('email', {
+              required: true,
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Email inválido'
+              },
+              maxLength: 32,
+              minLength: 6
+            })}
+            variant='outlined'
             placeholder='Enter your email'
+            sx={{ marginBottom: '20px' }}
           />
-          <TextField.Input
-            onChange={(e) => setPassword(e.target.value)}
-            variant='surface'
+
+          <TextField
+            error={errors.password ? true : false}
+            helperText={errors.password && 'Campo inválido'}
+            fullWidth
+            disabled={isLoading}
+            {...register('password', {
+              required: true,
+              maxLength: 32,
+              minLength: 6
+            })}
+            variant='outlined'
             placeholder='Enter your password'
-            type='password'
+            type={showPassword ? 'text' : 'password'}
+            sx={{ marginBottom: '20px' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton onClick={handleClickShowPassword} edge='end'>
+                    {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
           />
-          <Button
-            onClick={handleEmailAndPasswordSignIn}
-            style={{ width: '300px', cursor: 'pointer', backgroundColor: '#000' }}
-            mt='5'
-            radius='large'
-            size='3'
+
+          <LoadingButton
+            fullWidth
+            loading={isLoading}
+            variant='contained'
+            disabled={isLoading}
+            type='submit'
+            sx={{
+              textTransform: 'none',
+              backgroundColor: '#000',
+              height: '50px'
+            }}
           >
             Create Account
-          </Button>
-        </Flex>
+          </LoadingButton>
+        </form>
 
-        <Text mt='5' size='1'>
-          By registration you agree to <Link>Terms of Use</Link> and{' '}
-          <Link>Privacy Policy</Link>
-        </Text>
-      </Flex>
+        <p style={{ fontSize: '15px' }}>
+          By registration you agree to <Link href='#'>Terms of Use</Link> and{' '}
+          <Link href='#'>Privacy Policy</Link>
+        </p>
+      </Stack>
     </Container>
   )
+}
+
+const styleForm = {
+  maxWidth: '400px',
+  width: '100%',
+  marginBottom: '20px'
+}
+
+const styleSocialButton = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  maxWidth: '400px',
+  width: '100%',
+  height: '50px',
+  cursor: 'pointer',
+  marginBottom: '15px',
+  textTransform: 'none'
 }
 
 export default SignIn

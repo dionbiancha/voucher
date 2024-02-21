@@ -27,7 +27,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   )
 }
 
-export const usePreview = () => {
+export const useDataUser = () => {
   const context = useContext(UserContext)
 
   if (!context) {

@@ -3,15 +3,14 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
-import '@radix-ui/themes/styles.css'
-import { Theme } from '@radix-ui/themes'
+import { UserProvider } from './context/userContext'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Theme>
+      <UserProvider>
         <App />
-      </Theme>
+      </UserProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
