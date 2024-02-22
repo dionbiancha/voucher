@@ -94,8 +94,8 @@ export default function Header() {
 }
 
 const stylePhoto = {
-  width: '50px',
-  height: '50px',
+  width: '40px',
+  height: '40px',
   borderRadius: '50px',
   backgroundColor: '#F8F9FB',
   color: '#000',
