@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 function Home() {
   const { userData } = useDataUser()
 
-  return <Container>home</Container>
+  return <Container></Container>
 }
 
 export default Home

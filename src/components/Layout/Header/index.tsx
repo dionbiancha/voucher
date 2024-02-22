@@ -1,15 +1,21 @@
-import * as React from 'react'
+import React, { useEffect, useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import Logo from '/assets/icons/logo.png'
-import { Tooltip } from '@mui/material'
+import { Box, Tooltip } from '@mui/material'
+import { useDataUser } from '../../../context/userContext'
+import { useModal } from '../../Modal'
+import { auth } from '../../../services/firebase'
+import { useCustomNavigate } from '../../../context/navigationContext'
 
 export default function Header() {
-  const [auth, setAuth] = React.useState(false)
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const { userData } = useDataUser()
+  const { goToLogin } = useCustomNavigate()
+  const snack = useModal()
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -19,23 +25,34 @@ export default function Header() {
     setAnchorEl(null)
   }
 
+  async function handleLogout() {
+    auth
+      .signOut()
+      .then(() => {
+        goToLogin()
+        snack.hide()
+      })
+      .catch((error) => {
+        console.error('Erro ao fazer logout:', error)
+      })
+  }
+
   return (
     <AppBar position='static' sx={{ backgroundColor: '#FFF', boxShadow: 'none' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <img src={Logo} alt='logo' width='40px' />
-        {auth && (
+        {userData && (
           <div>
             <Tooltip title='Open settings'>
-              <IconButton
-                size='large'
-                aria-label='account of current user'
-                aria-controls='menu-appbar'
-                aria-haspopup='true'
-                onClick={handleMenu}
-                sx={{ backgroundColor: '#FFF' }}
-              >
-                DD
-              </IconButton>
+              {userData.photoURL ? (
+                <img
+                  onClick={handleMenu}
+                  src={userData.photoURL}
+                  style={{ ...stylePhoto }}
+                />
+              ) : (
+                <Box onClick={handleMenu}>aa</Box>
+              )}
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
@@ -53,12 +70,34 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem onClick={handleClose}>Perfil</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleClose()
+                  snack.show({
+                    title: 'Sair',
+                    text: 'Tem certeza que deseja sair?',
+                    cancelButtonText: 'Não',
+                    confirmButtonAction: handleLogout,
+                    confirmButtonText: 'Sim'
+                  })
+                }}
+              >
+                Sair
+              </MenuItem>
             </Menu>
           </div>
         )}
       </Toolbar>
     </AppBar>
   )
+}
+
+const stylePhoto = {
+  width: '50px',
+  height: '50px',
+  borderRadius: '50px',
+  backgroundColor: '#F8F9FB',
+  color: '#000',
+  cursor: 'pointer'
 }

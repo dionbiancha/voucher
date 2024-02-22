@@ -24,6 +24,7 @@ import { useSnack } from '../../components/Snack'
 import { LoadingButton } from '@mui/lab'
 import { MdVisibilityOff, MdVisibility } from 'react-icons/md'
 import { useDataUser } from '../../context/userContext'
+import { useCustomNavigate } from '../../context/navigationContext'
 
 type Inputs = {
   email: string
@@ -32,6 +33,7 @@ type Inputs = {
 
 function SignIn() {
   const { setUserData } = useDataUser()
+  const { goToHome } = useCustomNavigate()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const snack = useSnack()
   const [showPassword, setShowPassword] = useState(false)
@@ -50,6 +52,7 @@ function SignIn() {
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((res) => {
         setUserData(res.user)
+        goToHome()
       })
       .catch((error) => {
         setIsLoading(false)
@@ -64,6 +67,7 @@ function SignIn() {
     signInWithPopup(auth, provider)
       .then((res) => {
         setUserData(res.user)
+        goToHome()
       })
       .catch((error) => {})
   }
@@ -75,6 +79,7 @@ function SignIn() {
     signInWithPopup(auth, provider)
       .then((res) => {
         setUserData(res.user)
+        goToHome()
       })
       .catch((error) => {})
   }

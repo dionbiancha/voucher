@@ -4,6 +4,7 @@ import React, { createContext, useState, ReactNode, useContext } from 'react'
 interface UserContextProps {
   userData: User
   setUserData: React.Dispatch<React.SetStateAction<User>>
+  clearUserData: () => void
 }
 
 export const UserContext = createContext<UserContextProps | undefined>(undefined)
@@ -15,9 +16,14 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userData, setUserData] = useState<User>({} as User)
 
+  function clearUserData() {
+    setUserData({} as User)
+  }
+
   return (
     <UserContext.Provider
       value={{
+        clearUserData,
         setUserData,
         userData
       }}

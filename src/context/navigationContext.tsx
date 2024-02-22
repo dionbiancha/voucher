@@ -11,8 +11,13 @@ export function useCustomNavigate() {
     navigate('/login')
   }
 
+  function goToHome() {
+    navigate('/')
+  }
+
   return {
     goBack,
-    goToLogin
+    goToLogin,
+    goToHome
   }
 }

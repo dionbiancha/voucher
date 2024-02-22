@@ -14,6 +14,7 @@ function App() {
       goToLogin()
     }
   }, [location.pathname, userData])
+
   return (
     <>
       <Header />
