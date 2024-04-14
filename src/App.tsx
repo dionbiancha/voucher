@@ -4,6 +4,7 @@ import { Header } from './components/Layout'
 import { Home, SignIn } from './pages'
 import { useDataUser } from './context/userContext'
 import { useCustomNavigate } from './context/navigationContext'
+import { Box } from '@mui/material'
 
 function App() {
   const { userData } = useDataUser()
@@ -17,7 +18,9 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Box sx={{ marginBottom: '100px' }}>
+        <Header />
+      </Box>
       <Routes>
         <Route path='/' element={userData ? <Home /> : <Navigate to='/login' />} />
         <Route path='/login' element={<SignIn />} />

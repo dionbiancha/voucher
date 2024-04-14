@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -9,9 +10,11 @@ import {
   Modal,
   Select,
   SelectChangeEvent,
+  Stack,
   TextField
 } from '@mui/material'
 import ContentInput from '../../components/Layout/ContentInput'
+import OkCancelButton from '../../components/Buttons/OkCancelButton'
 
 interface Item {
   id: number
@@ -84,31 +87,38 @@ const SelectConsultant: React.FC = () => {
       </FormControl>
 
       <Modal open={modalOpen} onClose={handleModalClose}>
-        <div
+        <Stack
+          spacing={3}
+          alignItems={'center'}
           style={{
+            width: '100%',
+            maxWidth: '600px',
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             backgroundColor: 'white',
-            padding: '20px',
+            padding: '50px',
             borderRadius: '8px'
           }}
         >
+          <h3>Criar consultor</h3>
+          <Divider flexItem />
           <TextField
             label='Novo item'
             value={newItemName}
             onChange={(e) => setNewItemName(e.target.value)}
             fullWidth
           />
-          <Button
-            variant='contained'
-            onClick={handleAddItem}
-            style={{ marginTop: '10px' }}
-          >
-            Adicionar
-          </Button>
-        </div>
+          <OkCancelButton
+            cancelText='Cancelar'
+            handleCancel={handleModalClose}
+            handleOk={handleAddItem}
+            okText='Adicionar'
+            cancelTitle='Clique para fechar'
+            okTitle='Clique para adicionar'
+          />
+        </Stack>
       </Modal>
     </ContentInput>
   )

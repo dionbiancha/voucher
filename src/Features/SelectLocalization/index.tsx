@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
   Box,
   Button,
-  Divider,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -13,19 +12,30 @@ import {
   Stack,
   TextField
 } from '@mui/material'
+import Divider from '@mui/material/Divider'
 import ContentInput from '../../components/Layout/ContentInput'
 import OkCancelButton from '../../components/Buttons/OkCancelButton'
 
 interface Item {
   id: number
   name: string
+  qrCode: string
+  address: string
+  city: string
+  state: string
+  country: string
 }
 
-const SelectCompany: React.FC = () => {
+const SelectLocalization: React.FC = () => {
   const [items, setItems] = useState<Item[]>([])
   const [selectItem, setSelectItem] = useState<Item | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [newItemName, setNewItemName] = useState('')
+  const [newItemQrCode, setNewItemQrCode] = useState('')
+  const [newItemAddress, setNewItemAddress] = useState('')
+  const [newItemCity, setNewItemCity] = useState('')
+  const [newItemState, setNewItemState] = useState('')
+  const [newItemCountry, setNewItemCountry] = useState('')
 
   const handleModalOpen = () => {
     setModalOpen(true)
@@ -40,7 +50,12 @@ const SelectCompany: React.FC = () => {
     if (newItemName.trim() !== '') {
       const newItem: Item = {
         id: items.length + 1,
-        name: newItemName.trim()
+        name: newItemName.trim(),
+        qrCode: newItemQrCode.trim(),
+        address: newItemAddress.trim(),
+        city: newItemCity.trim(),
+        state: newItemState.trim(),
+        country: newItemCountry.trim()
       }
       setItems([...items, newItem])
       setSelectItem(newItem)
@@ -57,10 +72,10 @@ const SelectCompany: React.FC = () => {
   return (
     <ContentInput>
       <FormControl fullWidth>
-        <InputLabel>Selecione uma companhia</InputLabel>
+        <InputLabel>Selecione uma localização</InputLabel>
         <Select
-          title={'Clique e selecione uma companhia'}
-          label='Selecione uma companhia'
+          title={'Adicione uma localização'}
+          label='Selecione uma localização'
           value={selectItem?.name ?? ''}
           onChange={handleChange}
           startAdornment={
@@ -102,12 +117,42 @@ const SelectCompany: React.FC = () => {
             borderRadius: '8px'
           }}
         >
-          <h3>Criar companhia</h3>
+          <h3>Criar contato</h3>
           <Divider flexItem />
           <TextField
-            label='Novo item'
+            label='Nome'
             value={newItemName}
             onChange={(e) => setNewItemName(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label='Link QR Code'
+            value={newItemQrCode}
+            onChange={(e) => setNewItemQrCode(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label='Endereço'
+            value={newItemAddress}
+            onChange={(e) => setNewItemAddress(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label='Cidade'
+            value={newItemCity}
+            onChange={(e) => setNewItemCity(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label='Estado'
+            value={newItemState}
+            onChange={(e) => setNewItemState(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label='País'
+            value={newItemCountry}
+            onChange={(e) => setNewItemCountry(e.target.value)}
             fullWidth
           />
           <OkCancelButton
@@ -124,4 +169,4 @@ const SelectCompany: React.FC = () => {
   )
 }
 
-export default SelectCompany
+export default SelectLocalization

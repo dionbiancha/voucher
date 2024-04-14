@@ -38,7 +38,7 @@ export default function Header() {
   }
 
   return (
-    <AppBar position='static' sx={{ backgroundColor: '#FFF', boxShadow: 'none' }}>
+    <AppBar position='fixed' sx={{ backgroundColor: '#FFF', boxShadow: 'none' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <img src={Logo} alt='logo' width='40px' />
         {userData && (

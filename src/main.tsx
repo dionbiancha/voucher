@@ -5,14 +5,17 @@ import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import { UserProvider } from './context/userContext'
 import { ModalProvider } from './components/Modal'
+import { DataProvider } from './context/dataContext'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
-        <ModalProvider>
-          <App />
-        </ModalProvider>
+        <DataProvider>
+          <ModalProvider>
+            <App />
+          </ModalProvider>
+        </DataProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>,
