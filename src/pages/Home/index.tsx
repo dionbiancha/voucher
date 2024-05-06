@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import DragDrop from '../../Features/DragDrop'
-import { Box, Button } from '@mui/material'
+import {
+  Box,
+  Button,
+  Collapse,
+  Divider,
+  Fab,
+  IconButton,
+  Stack,
+  SxProps,
+  Tooltip,
+  Zoom,
+  useTheme
+} from '@mui/material'
 import HeaderVoucher from '../../components'
 import { SelectType, useData } from '../../context/dataContext'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import AddIcon from '@mui/icons-material/Add'
+import { TransitionGroup } from 'react-transition-group'
+import { useSnack } from '../../components/Snack'
 
 interface ColumnType {
   id: string
@@ -21,12 +37,17 @@ const initialColumns: Record<string, ColumnType> = {
   }
 }
 
-function Home() {
+interface DragAreaProps {
+  id?: number
+}
+
+function DragArea({ id }: DragAreaProps) {
   const { selectType } = useData()
   const [columns, setColumns] = useState(initialColumns)
-  const [additionalAreas, setAdditionalAreas] = useState<Record<string, unknown>[]>([])
+  const [enabledService, setEnabledService] = useState(false)
 
   useEffect(() => {
+    if (!enabledService) return
     if (selectType === SelectType.hotel) {
       setColumns((prevColumns) => ({
         ...prevColumns,
@@ -79,6 +100,7 @@ function Home() {
         }
       }))
     }
+    setEnabledService(false)
   }, [selectType])
 
   const onDragEnd = ({ source, destination }: DropResult) => {
@@ -125,34 +147,102 @@ function Home() {
     }
   }
 
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Box
+        onClick={() => setEnabledService(true)}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between'
+        }}
+      >
+        {Object.values(columns).map((col) => (
+          <DragDrop col={col} key={col.id} idVoucher={id} />
+        ))}
+      </Box>
+    </DragDropContext>
+  )
+}
+
+function Home() {
+  const [additionalAreas, setAdditionalAreas] = useState<Record<string, unknown>[]>([])
+  const theme = useTheme()
+  const snack = useSnack()
+
+  const fabStyle = {
+    position: 'fixed',
+    bottom: 30,
+    right: 30
+  }
+
+  const transitionDuration = {
+    enter: theme.transitions.duration.enteringScreen,
+    exit: theme.transitions.duration.leavingScreen
+  }
+
   const addAdditionalArea = () => {
-    setAdditionalAreas((prevAreas) => [...prevAreas, {}])
+    setAdditionalAreas((prevAreas) => [...prevAreas, { id: prevAreas.length + 1 }])
   }
 
   const removeAdditionalArea = (index: number) => {
     setAdditionalAreas((prevAreas) => prevAreas.filter((_, i) => i !== index))
+    snack.info('Voucher removido')
   }
 
+  useEffect(() => {
+    if (additionalAreas.length === 0) {
+      addAdditionalArea()
+    }
+  }, [])
+
   return (
-    <>
+    <Box sx={{ maxWidth: '1500px', margin: 'auto' }}>
       <HeaderVoucher />
-      {additionalAreas.map((_, index) => (
-        <DragDropContext onDragEnd={onDragEnd} key={index}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between'
-            }}
-          >
-            {Object.values(columns).map((col) => (
-              <DragDrop col={col} key={col.id} />
-            ))}
-          </Box>
-        </DragDropContext>
-      ))}
-      <Button onClick={addAdditionalArea}>Add</Button>
-    </>
+      <TransitionGroup>
+        {additionalAreas.map((_, index) => (
+          <Collapse key={index}>
+            <Stack direction='row' justifyContent='end' margin={'10px 30px 10px 10px'}>
+              <Button
+                onClick={() => removeAdditionalArea(index)}
+                variant='contained'
+                color='error'
+                sx={{
+                  fontSize: '10px',
+                  padding: '1px',
+                  textTransform: 'none'
+                }}
+              >
+                Remover
+              </Button>
+            </Stack>
+
+            <DragArea id={index} />
+            <Divider sx={{ marginY: '30px' }} />
+          </Collapse>
+        ))}
+      </TransitionGroup>
+      <Tooltip
+        title='Adicionar'
+        onClick={() => {
+          addAdditionalArea()
+          snack.success('Voucher adicionado')
+        }}
+      >
+        <Zoom
+          in={true}
+          timeout={transitionDuration}
+          style={{
+            transitionDelay: `${transitionDuration.exit}ms`
+          }}
+          unmountOnExit
+        >
+          <Fab sx={fabStyle as SxProps} aria-label={'Add'} color={'primary'}>
+            <AddIcon />
+          </Fab>
+        </Zoom>
+      </Tooltip>
+    </Box>
   )
 }
 

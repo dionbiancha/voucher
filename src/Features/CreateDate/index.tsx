@@ -4,7 +4,11 @@ import 'react-international-phone/style.css'
 import DateField from '../../components/Forms/DateField'
 import dayjs, { Dayjs } from 'dayjs'
 
-function CreateDate() {
+interface Props {
+  idVoucher?: number
+}
+
+function CreateDate({ idVoucher }: Props) {
   const [value, setValue] = useState<Date | null>(null)
   return (
     <ContentInput>

@@ -26,7 +26,11 @@ const items = [
   { name: 'Ticket', id: SelectType.ticket }
 ]
 
-const SelectService: React.FC = () => {
+interface SelectServiceProps {
+  idVoucher?: number
+}
+
+const SelectService = ({ idVoucher }: SelectServiceProps) => {
   const { setSelectType } = useData()
   const [selectItem, setSelectItem] = useState<Props | null>(null)
 

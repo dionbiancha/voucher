@@ -36,7 +36,7 @@ export function SnackProvider(props: Props): ReactElement {
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [type, setType] = useState<SnackType>('info')
-  const [duration, setDuration] = useState(6000)
+  const [duration, setDuration] = useState(2000)
 
   function alert(value: string, duration?: number) {
     setMessage(value)
@@ -72,16 +72,33 @@ export function SnackProvider(props: Props): ReactElement {
     setOpen(true)
   }
 
+  function selectColor(type: SnackType) {
+    switch (type) {
+      case 'success':
+        return '#21C643'
+      case 'info':
+        return '#1565C0'
+      case 'warning':
+        return '#FFC107'
+      case 'error':
+        return '#F44336'
+    }
+  }
+
   return (
     <SnackContext.Provider value={{ alert, success, info, error, connectionFail }}>
       {props.children}
       <Snackbar
         open={open}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         autoHideDuration={duration}
         onClose={() => setOpen(false)}
       >
-        <Alert variant='filled' severity={type} sx={{ color: '#000 ' }}>
+        <Alert
+          variant='filled'
+          severity={type}
+          sx={{ backgroundColor: selectColor(type) }}
+        >
           {message}
         </Alert>
       </Snackbar>

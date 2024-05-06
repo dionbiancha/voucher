@@ -5,7 +5,11 @@ import { PhoneInput } from 'react-international-phone'
 import 'react-international-phone/style.css'
 import { PhoneNumber } from '../../components/Forms/PhoneNumber'
 
-function PaxPhone() {
+interface Props {
+  idVoucher?: number
+}
+
+function PaxPhone({ idVoucher }: Props) {
   const [value, setValue] = useState('')
   return (
     <ContentInput>

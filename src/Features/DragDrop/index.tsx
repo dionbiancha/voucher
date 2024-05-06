@@ -8,9 +8,10 @@ interface DragDropProps {
     id: string
     list: string[]
   }
+  idVoucher?: number
 }
 
-const DragDrop: React.FC<DragDropProps> = ({ col: { list, id } }) => {
+const DragDrop: React.FC<DragDropProps> = ({ col: { list, id }, idVoucher }) => {
   return (
     <Droppable droppableId={id}>
       {(provided) => (
@@ -26,7 +27,7 @@ const DragDrop: React.FC<DragDropProps> = ({ col: { list, id } }) => {
           ref={provided.innerRef}
         >
           {list.map((field, index) => (
-            <Item key={field} field={field} index={index} />
+            <Item idVoucher={idVoucher} key={field} field={field} index={index} />
           ))}
           {provided.placeholder}
         </Box>

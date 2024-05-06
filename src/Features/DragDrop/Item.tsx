@@ -1,5 +1,5 @@
 import { Box, TextField } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import SelectLogo from '../SelectLogo'
 import SelectPartnerLogo from '../SelectPartnerLogo'
@@ -26,9 +26,13 @@ import CreateTime from '../CreateTime'
 interface ItemProps {
   field: string
   index: number
+  idVoucher?: number
 }
 
-const Item: React.FC<ItemProps> = ({ field, index }) => {
+const Item: React.FC<ItemProps> = ({ field, index, idVoucher }) => {
+  useEffect(() => {
+    console.log('idVoucher', idVoucher)
+  }, [])
   return (
     <Draggable draggableId={field} index={index}>
       {(provided) => (
@@ -40,26 +44,26 @@ const Item: React.FC<ItemProps> = ({ field, index }) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          {field === '1' && <SelectPartnerLogo />}
-          {field === '2' && <SelectConsultant />}
-          {field === '3' && <SelectCompany />}
-          {field === '5' && <SelectService />}
-          {field === '4' && <SelectContact />}
-          {field === '6' && <ConfirmationNumber />}
-          {field === '7' && <PaxPhone />}
-          {field === '8' && <CreateDate />}
-          {field === '9' && <Flight />}
-          {field === '10' && <Airport />}
-          {field === '11' && <CheckIn />}
-          {field === '12' && <CheckOut />}
-          {field === '13' && <CancellationPolicy />}
-          {field === '14' && <Observations />}
-          {field === '15' && <TypeOfRoom />}
-          {field === '16' && <AccommodationDetails />}
-          {field === '17' && <AccommodationRegime />}
-          {field === '18' && <SelectLocalization />}
-          {field === '19' && <Hotel />}
-          {field === '20' && <CreateTime />}
+          {field === '1' && <SelectPartnerLogo idVoucher={idVoucher} />}
+          {field === '2' && <SelectConsultant idVoucher={idVoucher} />}
+          {field === '3' && <SelectCompany idVoucher={idVoucher} />}
+          {field === '5' && <SelectService idVoucher={idVoucher} />}
+          {field === '4' && <SelectContact idVoucher={idVoucher} />}
+          {field === '6' && <ConfirmationNumber idVoucher={idVoucher} />}
+          {field === '7' && <PaxPhone idVoucher={idVoucher} />}
+          {field === '8' && <CreateDate idVoucher={idVoucher} />}
+          {field === '9' && <Flight idVoucher={idVoucher} />}
+          {field === '10' && <Airport idVoucher={idVoucher} />}
+          {field === '11' && <CheckIn idVoucher={idVoucher} />}
+          {field === '12' && <CheckOut idVoucher={idVoucher} />}
+          {field === '13' && <CancellationPolicy idVoucher={idVoucher} />}
+          {field === '14' && <Observations idVoucher={idVoucher} />}
+          {field === '15' && <TypeOfRoom idVoucher={idVoucher} />}
+          {field === '16' && <AccommodationDetails idVoucher={idVoucher} />}
+          {field === '17' && <AccommodationRegime idVoucher={idVoucher} />}
+          {field === '18' && <SelectLocalization idVoucher={idVoucher} />}
+          {field === '19' && <Hotel idVoucher={idVoucher} />}
+          {field === '20' && <CreateTime idVoucher={idVoucher} />}
         </Box>
       )}
     </Draggable>

@@ -20,8 +20,11 @@ interface Item {
   id: number
   name: string
 }
+interface Props {
+  idVoucher?: number
+}
 
-const SelectConsultant: React.FC = () => {
+const SelectConsultant = ({ idVoucher }: Props) => {
   const [items, setItems] = useState<Item[]>([])
   const [selectItem, setSelectItem] = useState<Item | null>(null)
   const [modalOpen, setModalOpen] = useState(false)

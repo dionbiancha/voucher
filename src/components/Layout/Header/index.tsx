@@ -15,7 +15,7 @@ export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const { userData } = useDataUser()
   const { goToLogin } = useCustomNavigate()
-  const snack = useModal()
+  const modal = useModal()
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -30,7 +30,7 @@ export default function Header() {
       .signOut()
       .then(() => {
         goToLogin()
-        snack.hide()
+        modal.hide()
       })
       .catch((error) => {
         console.error('Erro ao fazer logout:', error)
@@ -74,7 +74,7 @@ export default function Header() {
               <MenuItem
                 onClick={() => {
                   handleClose()
-                  snack.show({
+                  modal.show({
                     title: 'Sair',
                     text: 'Tem certeza que deseja sair?',
                     cancelButtonText: 'Não',

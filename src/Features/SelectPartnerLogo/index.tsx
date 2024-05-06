@@ -11,7 +11,11 @@ import {
 } from '@mui/material'
 import ContentInput from '../../components/Layout/ContentInput'
 
-const SelectPartnerLogo: React.FC = () => {
+interface Props {
+  idVoucher?: number
+}
+
+const SelectPartnerLogo = ({ idVoucher }: Props) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [list, setList] = useState<File[]>([])
 

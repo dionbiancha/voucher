@@ -26,7 +26,11 @@ interface Item {
   country: string
 }
 
-const SelectLocalization: React.FC = () => {
+interface Props {
+  idVoucher?: number
+}
+
+const SelectLocalization = ({ idVoucher }: Props) => {
   const [items, setItems] = useState<Item[]>([])
   const [selectItem, setSelectItem] = useState<Item | null>(null)
   const [modalOpen, setModalOpen] = useState(false)

@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import { Box, TextField, Button } from '@mui/material'
 import ContentInput from '../../components/Layout/ContentInput'
 
-function Airport() {
+interface Props {
+  idVoucher?: number
+}
+
+function Airport({ idVoucher }: Props) {
   const [value, setValue] = useState('')
   return (
     <ContentInput>
